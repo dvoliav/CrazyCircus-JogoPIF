@@ -3,23 +3,21 @@
 
 #include <stdbool.h>
 
-// Cada célula representa um "quadrado" do campo
 typedef struct {
-    bool temAnimal;     // Diz se há um bicho escondido (bomba)
-    bool foiAberta;     // Indica se o jogador já abriu essa célula
-    int animaisAdj;     // Quantos animais há nas células vizinhas
+    bool temAnimal;
+    bool foiAberta;
+    int animaisAdj;
 } Celula;
 
-// Estrutura principal do tabuleiro
 typedef struct {
     int totalLinhas;
     int totalColunas;
-    Celula **grade;     // Ponteiro para a matriz de células
+    Celula **grade;
 } Tabuleiro;
 
-// Funções principais do tabuleiro
 Tabuleiro *criarTabuleiro(int linhas, int colunas);
 void liberarTabuleiro(Tabuleiro *tabuleiro);
 void imprimirTabuleiro(Tabuleiro *tabuleiro);
+void gerarAnimais(Tabuleiro *tabuleiro, float porcentagem);
 
 #endif
