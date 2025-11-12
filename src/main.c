@@ -3,30 +3,49 @@
 #include "tabuleiro.h"
 
 int main(void) {
-    // Configurações da janela do jogo
-    const int larguraJanela = 800;
-    const int alturaJanela = 600;
-    InitWindow(larguraJanela, alturaJanela, "🎪 Campo Minado do Palhaço 🎯");
+    // --- Obtém resolução do monitor principal ---
+    int larguraTela = GetMonitorWidth(0);
+    int alturaTela  = GetMonitorHeight(0);
 
-    // Criação do tabuleiro 12x12
+    // --- Inicializa a janela em tela cheia real ---
+    InitWindow(larguraTela, alturaTela, "Crazy Circus");
+    ToggleFullscreen(); // Garante o modo tela cheia nativo
+
+    // --- Criação do tabuleiro 12x12 ---
     Tabuleiro *tabuleiro = criarTabuleiro(12, 12);
+
+    // --- Carrega a imagem de fundo ---
+    Texture2D imagemCenario = LoadTexture("assets/fundoCrazyCircus.png");
 
     SetTargetFPS(60);
 
-    // Loop principal do jogo (por enquanto só exibe o texto)
     while (!WindowShouldClose()) {
+
+        // Permite alternar entre tela cheia e modo janela
+        if (IsKeyPressed(KEY_F11)) {
+            ToggleFullscreen();
+        }
+
         BeginDrawing();
             ClearBackground(RAYWHITE);
-            DrawText("Tabuleiro 12x12 criado! (Veja no terminal)", 140, 280, 20, DARKBLUE);
+
+            // --- Escala proporcional da imagem ---
+            float escalaLargura = (float)GetScreenWidth() / imagemCenario.width;
+            float escalaAltura  = (float)GetScreenHeight() / imagemCenario.height;
+            float escalaFinal = (escalaLargura > escalaAltura) ? escalaLargura : escalaAltura;
+
+            float posX = (GetScreenWidth()  - (imagemCenario.width * escalaFinal)) / 2.0f;
+            float posY = (GetScreenHeight() - (imagemCenario.height * escalaFinal)) / 2.0f;
+
+            DrawTextureEx(imagemCenario, (Vector2){posX, posY}, 0.0f, escalaFinal, WHITE);
+
         EndDrawing();
     }
 
-    // Mostra o tabuleiro no terminal
-    imprimirTabuleiro(tabuleiro);
-
-    // Libera memória antes de sair
+    // --- Libera recursos ---
+    UnloadTexture(imagemCenario);
     liberarTabuleiro(tabuleiro);
-
     CloseWindow();
+
     return 0;
 }
