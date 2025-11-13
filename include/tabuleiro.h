@@ -3,21 +3,22 @@
 
 #include <stdbool.h>
 
+typedef enum { VAZIO, ANIMAL, BOMBA } TipoCelula;
+
 typedef struct {
-    bool temAnimal;
-    bool foiAberta;
-    int animaisAdj;
+    TipoCelula tipo;
+    bool visivel;
 } Celula;
 
 typedef struct {
-    int totalLinhas;
-    int totalColunas;
-    Celula **grade;
+    int linhas;
+    int colunas;
+    Celula **matriz;
 } Tabuleiro;
 
-Tabuleiro *criarTabuleiro(int linhas, int colunas);
-void liberarTabuleiro(Tabuleiro *tabuleiro);
-void imprimirTabuleiro(Tabuleiro *tabuleiro);
-void gerarAnimais(Tabuleiro *tabuleiro, float porcentagem);
+Tabuleiro* criarTabuleiro(int linhas, int colunas);
+void liberarTabuleiro(Tabuleiro* tabuleiro);
+void gerarAnimais(Tabuleiro* tabuleiro, float chanceBomba);
+void abrirCelula(Tabuleiro* tabuleiro, int linha, int coluna);
 
 #endif

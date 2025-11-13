@@ -1,55 +1,43 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
 #include "tabuleiro.h"
+#include <stdlib.h>
+#include <stdio.h>
 
-Tabuleiro *criarTabuleiro(int linhas, int colunas) {
-    Tabuleiro *tabuleiro = malloc(sizeof(Tabuleiro));
-    tabuleiro->totalLinhas = linhas;
-    tabuleiro->totalColunas = colunas;
-    tabuleiro->grade = malloc(linhas * sizeof(Celula *));
+Tabuleiro* criarTabuleiro(int linhas, int colunas) {
+    Tabuleiro *t = malloc(sizeof(Tabuleiro));
+    t->linhas = linhas;
+    t->colunas = colunas;
+    t->matriz = malloc(linhas * sizeof(Celula*));
     for (int i = 0; i < linhas; i++) {
-        tabuleiro->grade[i] = malloc(colunas * sizeof(Celula));
+        t->matriz[i] = malloc(colunas * sizeof(Celula));
         for (int j = 0; j < colunas; j++) {
-            tabuleiro->grade[i][j].temAnimal = false;
-            tabuleiro->grade[i][j].foiAberta = false;
-            tabuleiro->grade[i][j].animaisAdj = 0;
+            t->matriz[i][j].tipo = ANIMAL;
+            t->matriz[i][j].visivel = true;
         }
     }
-    return tabuleiro;
+    return t;
 }
 
-void liberarTabuleiro(Tabuleiro *tabuleiro) {
-    for (int i = 0; i < tabuleiro->totalLinhas; i++) free(tabuleiro->grade[i]);
-    free(tabuleiro->grade);
+void liberarTabuleiro(Tabuleiro* tabuleiro) {
+    for (int i = 0; i < tabuleiro->linhas; i++)
+        free(tabuleiro->matriz[i]);
+    free(tabuleiro->matriz);
     free(tabuleiro);
 }
 
-void imprimirTabuleiro(Tabuleiro *tabuleiro) {
-    for (int i = 0; i < tabuleiro->totalLinhas; i++) {
-        for (int j = 0; j < tabuleiro->totalColunas; j++) {
-            if (tabuleiro->grade[i][j].temAnimal)
-                printf("[X] ");
+void gerarAnimais(Tabuleiro* tabuleiro, float chanceBomba) {
+    for (int i = 0; i < tabuleiro->linhas; i++) {
+        for (int j = 0; j < tabuleiro->colunas; j++) {
+            int rnd = rand() % 100;
+            if (rnd < (int)(chanceBomba*100))
+                tabuleiro->matriz[i][j].tipo = BOMBA;
             else
-                printf("[ ] ");
+                tabuleiro->matriz[i][j].tipo = ANIMAL;
+            tabuleiro->matriz[i][j].visivel = true;
         }
-        printf("\n");
     }
-    printf("\n");
 }
 
-
-void gerarAnimais(Tabuleiro *tabuleiro, float porcentagem) {
-    srand(time(NULL));
-    int totalCelulas = tabuleiro->totalLinhas * tabuleiro->totalColunas;
-    int totalAnimais = (int)(totalCelulas * porcentagem);
-    int animaisGerados = 0;
-    while (animaisGerados < totalAnimais) {
-        int linha = rand() % tabuleiro->totalLinhas;
-        int coluna = rand() % tabuleiro->totalColunas;
-        if (!tabuleiro->grade[linha][coluna].temAnimal) {
-            tabuleiro->grade[linha][coluna].temAnimal = true;
-            animaisGerados++;
-        }
-    }
+void abrirCelula(Tabuleiro* tabuleiro, int linha, int coluna) {
+    if (linha < 0 || linha >= tabuleiro->linhas || coluna < 0 || coluna >= tabuleiro->colunas) return;
+    tabuleiro->matriz[linha][coluna].visivel = false;
 }
