@@ -78,7 +78,7 @@ int main(void) {
     };
 
     // Offset da mão do palhaço (ajustado para a faca sair da mão)
-    Vector2 offsetMao = { palhacoParado.width * 0.75f, palhacoParado.height * 0.01f };
+    Vector2 offsetMao = { palhacoParado.width * 0.01f, palhacoParado.height * 0.01f };
 
     // Faca
     Texture2D spritesFaca[3] = {faca1, faca2, faca3};
