@@ -53,6 +53,7 @@ int main(void) {
     int LINHAS = 12, COLUNAS = 12;
     Tabuleiro *tabuleiro = criarTabuleiro(LINHAS, COLUNAS);
     gerarAnimais(tabuleiro, 0.15f);
+    calcularVizinhos(tabuleiro);
 
     // Cores das células
     Color **coresCelulas = malloc(LINHAS * sizeof(Color*));
@@ -88,7 +89,8 @@ int main(void) {
 
     // Mensagem bomba
     char mensagem[128] = "";
-
+    Color corMensagem = WHITE;
+    int pontuacao = 0;
     // Célula alvo
     int alvoLinha = -1;
     int alvoColuna = -1;
@@ -121,7 +123,7 @@ int main(void) {
                         faca.emMovimento = true;
                         faca.frame = 0;
                         faca.tempoAnimacao = 0.0f;
-                        mensagem[0] = '\0'; // reset mensagem
+                        
                         break;
                     }
                 }
@@ -133,11 +135,21 @@ int main(void) {
 
         // Verificar se a faca chegou ao destino
         if (!faca.emMovimento && alvoLinha != -1 && alvoColuna != -1) {
-            if (tabuleiro->matriz[alvoLinha][alvoColuna].tipo == BOMBA) {
-                snprintf(mensagem, sizeof(mensagem), "Você acertou um animal");
+            
+            if (tabuleiro->matriz[alvoLinha][alvoColuna].tipo == ANIMAL) {
+                snprintf(mensagem, sizeof(mensagem), "Voce acertou um animal. -500");
+
+                corMensagem = RED;
+
+                pontuacao -= 500;
+                if (pontuacao < 0) pontuacao = 0;
             } else {
-                abrirCelula(tabuleiro, alvoLinha, alvoColuna);
+                snprintf(mensagem, sizeof(mensagem), "Boa! Area segura. +100");
+                corMensagem = GREEN;
+                pontuacao += 100;
             }
+            abrirCelula(tabuleiro, alvoLinha, alvoColuna); 
+
             alvoLinha = alvoColuna = -1; // reset
         }
 
@@ -145,15 +157,43 @@ int main(void) {
         BeginDrawing();
         ClearBackground(RAYWHITE);
         DrawTexture(fundo, 0, 0, WHITE);
+        // desenhar placar
+        DrawRectangle(0, 0, LARGURA_TELA, 50, Fade(BLACK, 0.8f));
+        DrawText(TextFormat("PONTOS: %04d", pontuacao), 20, 15, 30, WHITE);
+        
+        int larguraMsg = MeasureText(mensagem, 20);
+        DrawText(mensagem, LARGURA_TELA/2 - larguraMsg/2, 20, 20, corMensagem);
 
-        // Grid
         for (int i = 0; i < LINHAS; i++) {
             for (int j = 0; j < COLUNAS; j++) {
-                if (!tabuleiro->matriz[i][j].visivel) continue;
                 float x = margemEsquerda + j * (tamanhoCelula + espacamento);
                 float y = margemSuperior + i * (tamanhoCelula + espacamento);
-                DrawRectangleRounded((Rectangle){x, y, tamanhoCelula, tamanhoCelula}, 0.2f, 6, coresCelulas[i][j]);
-                DrawRectangleLinesEx((Rectangle){x, y, tamanhoCelula, tamanhoCelula}, 1.5f, BLACK);
+                Rectangle rect = {x, y, tamanhoCelula, tamanhoCelula};
+
+                if (tabuleiro->matriz[i][j].visivel) {
+                    DrawRectangleRounded(rect, 0.2f, 6, coresCelulas[i][j]);
+                    DrawRectangleLinesEx(rect, 1.5f, BLACK);
+                } else {
+                    if (tabuleiro->matriz[i][j].tipo == ANIMAL) {
+                        DrawCircle(x + tamanhoCelula/2, y + tamanhoCelula/2, 12, RED);
+                    } 
+                    else if (tabuleiro->matriz[i][j].animaisVizinhos > 0) {
+
+                        DrawRectangleRounded(rect, 0.2f, 6, RAYWHITE); 
+                        DrawRectangleLinesEx(rect, 1.5f, LIGHTGRAY);
+
+                        char num[2];
+                        sprintf(num, "%d", tabuleiro->matriz[i][j].animaisVizinhos);
+                        
+                        Color c = BLACK;
+                        if (tabuleiro->matriz[i][j].animaisVizinhos == 1) c = BLUE;
+                        else if (tabuleiro->matriz[i][j].animaisVizinhos == 2) c = DARKGREEN;
+                        else if (tabuleiro->matriz[i][j].animaisVizinhos == 3) c = RED;
+
+                        int txtW = MeasureText(num, 20);
+                        DrawText(num, x + tamanhoCelula/2 - txtW/2, y + 10, 20, c);
+                    }
+                }
             }
         }
 
@@ -163,11 +203,6 @@ int main(void) {
 
         // Faca
         desenharFaca(&faca);
-
-        // Mensagem
-        if (mensagem[0] != '\0') {
-            DrawText(mensagem, LARGURA_TELA/2 - MeasureText(mensagem, 20)/2, 50, 20, RED);
-        }
 
         EndDrawing();
     }
