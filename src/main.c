@@ -88,17 +88,26 @@ int main(void) {
     float tempoFrameFaca = 0.1f;
 
     // Mensagem bomba
-    char mensagem[128] = "";
+    char mensagem[128] = "Atire a faca para iniciar";
     Color corMensagem = WHITE;
-    int pontuacao = 0;
+    double timer = 0.0;
+    
+    // tempo começa depois de atirar faca
+    bool iniciarJogo = false; 
+    bool fimJogo = false; // acaba quando vence
+
     // Célula alvo
     int alvoLinha = -1;
     int alvoColuna = -1;
 
     while (!WindowShouldClose()) {
 
+        if(iniciarJogo && !fimJogo){
+            timer += GetFrameTime();
+        }
+
         // Detectar clique
-        if (!faca.emMovimento && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+        if (!fimJogo && !faca.emMovimento && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
             Vector2 mouse = GetMousePosition();
             for (int i = 0; i < LINHAS; i++) {
                 for (int j = 0; j < COLUNAS; j++) {
@@ -109,6 +118,8 @@ int main(void) {
                     Rectangle celulaRect = {x, y, tamanhoCelula, tamanhoCelula};
 
                     if (CheckCollisionPointRec(mouse, celulaRect)) {
+                        iniciarJogo = true;
+
                         alvoLinha = i;
                         alvoColuna = j;
                         // Pos inicial da faca na mão do palhaço
@@ -137,18 +148,23 @@ int main(void) {
         if (!faca.emMovimento && alvoLinha != -1 && alvoColuna != -1) {
             
             if (tabuleiro->matriz[alvoLinha][alvoColuna].tipo == ANIMAL) {
-                snprintf(mensagem, sizeof(mensagem), "Voce acertou um animal. -500");
+                fimJogo = true;
 
+                revelarAnimais(tabuleiro);
+
+                snprintf(mensagem, sizeof(mensagem), "FIM DE JOGO! VOCE ACERTOU UM ANIMAL.");
                 corMensagem = RED;
-
-                pontuacao -= 500;
-                if (pontuacao < 0) pontuacao = 0;
             } else {
-                snprintf(mensagem, sizeof(mensagem), "Boa! Area segura. +100");
+                snprintf(mensagem, sizeof(mensagem), "Boa! Area segura.");
                 corMensagem = GREEN;
-                pontuacao += 100;
             }
             abrirCelula(tabuleiro, alvoLinha, alvoColuna); 
+
+            if(verificarVitoria(tabuleiro)){
+                fimJogo = true;
+                snprintf(mensagem, sizeof(mensagem), "VITORIA!");
+                corMensagem = GOLD;
+            }
 
             alvoLinha = alvoColuna = -1; // reset
         }
@@ -159,7 +175,8 @@ int main(void) {
         DrawTexture(fundo, 0, 0, WHITE);
         // desenhar placar
         DrawRectangle(0, 0, LARGURA_TELA, 50, Fade(BLACK, 0.8f));
-        DrawText(TextFormat("PONTOS: %04d", pontuacao), 20, 15, 30, WHITE);
+        
+        DrawText(TextFormat("TEMPO: %03.0f", timer), 20, 15, 30, WHITE);
         
         int larguraMsg = MeasureText(mensagem, 20);
         DrawText(mensagem, LARGURA_TELA/2 - larguraMsg/2, 20, 20, corMensagem);
