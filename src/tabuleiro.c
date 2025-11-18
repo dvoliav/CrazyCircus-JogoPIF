@@ -128,3 +128,24 @@ void abrirCelula(Tabuleiro* tabuleiro, int linha, int coluna) {
         }
     }
 }
+
+bool verificarVitoria(Tabuleiro* tabuleiro) {
+    for (int i = 0; i < tabuleiro->linhas; i++) {
+        for (int j = 0; j < tabuleiro->colunas; j++) {
+            if (tabuleiro->matriz[i][j].tipo != ANIMAL && tabuleiro->matriz[i][j].visivel) {
+                return false; 
+            }
+        }
+    }
+    return true; 
+}
+
+void revelarAnimais(Tabuleiro* tabuleiro) {
+    for (int i = 0; i < tabuleiro->linhas; i++) {
+        for (int j = 0; j < tabuleiro->colunas; j++) {
+            if (tabuleiro->matriz[i][j].tipo == ANIMAL) {
+                tabuleiro->matriz[i][j].visivel = false; 
+            }
+        }
+    }
+}
