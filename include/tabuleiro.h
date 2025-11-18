@@ -28,5 +28,7 @@ void liberarTabuleiro(Tabuleiro* tabuleiro);
 void gerarAnimais(Tabuleiro* tabuleiro, float chanceAnimal);
 void calcularVizinhos(Tabuleiro *tabuleiro);
 void abrirCelula(Tabuleiro* tabuleiro, int linha, int coluna);
+bool verificarVitoria(Tabuleiro* tabuleiro);
+void revelarAnimais(Tabuleiro* tabuleiro);
 
 #endif
