@@ -1,6 +1,5 @@
 #include "tabuleiro.h"
 #include <stdlib.h>
-#include <stdio.h>
 
 void adicionarNaLista(node **inicio, int linha, int coluna) {
     node *novo = malloc(sizeof(node));
@@ -28,6 +27,7 @@ Tabuleiro* criarTabuleiro(int linhas, int colunas) {
         for (int j = 0; j < colunas; j++) {
             tabuleiro->matriz[i][j].tipo = VAZIO;
             tabuleiro->matriz[i][j].visivel = true;
+            tabuleiro->matriz[i][j].bandeira = false;
             tabuleiro->matriz[i][j].animaisVizinhos = 0;
         }
     }
@@ -52,6 +52,7 @@ void gerarAnimais(Tabuleiro* tabuleiro, float chanceAnimal) {
                 tabuleiro->matriz[i][j].tipo = VAZIO;
             
             tabuleiro->matriz[i][j].visivel = true;
+            tabuleiro->matriz[i][j].bandeira = false;
         }
     }
 }
@@ -62,11 +63,11 @@ int contarAdjacentes(Tabuleiro *tabuleiro, int linha, int coluna) {
     for (int i = -1; i <= 1; i++) {
         for (int j = -1; j <= 1; j++) {
             
-            int novaLinha = linha + i; 
-            int novaColuna = coluna + j; 
+            int nl = linha + i; 
+            int nc = coluna + j; 
             
-            if (novaLinha >= 0 && novaLinha < tabuleiro->linhas && novaColuna >= 0 && novaColuna < tabuleiro->colunas) {
-                if (tabuleiro->matriz[novaLinha][novaColuna].tipo == ANIMAL) {
+            if (nl >= 0 && nl < tabuleiro->linhas && nc >= 0 && nc < tabuleiro->colunas) {
+                if (tabuleiro->matriz[nl][nc].tipo == ANIMAL) {
                     cont++;
                 }
             }
@@ -94,6 +95,7 @@ void abrirCelula(Tabuleiro* tabuleiro, int linha, int coluna) {
     if (!tabuleiro->matriz[linha][coluna].visivel) return;
 
     tabuleiro->matriz[linha][coluna].visivel = false;
+    tabuleiro->matriz[linha][coluna].bandeira = false;
 
     if (tabuleiro->matriz[linha][coluna].tipo == ANIMAL) return;
 
@@ -104,23 +106,24 @@ void abrirCelula(Tabuleiro* tabuleiro, int linha, int coluna) {
 
     while (lista != NULL) {
         node *atual = removerDaLista(&lista);
-        int linhaAtual = atual->linha;
-        int colunaAtual = atual->coluna;
+        int la = atual->linha;
+        int ca = atual->coluna;
         free(atual);
 
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
-                int novaLinha = linhaAtual + i;
-                int novaColuna = colunaAtual + j;
+                int nl = la + i;
+                int nc = ca + j;
 
-                if (novaLinha >= 0 && novaLinha < tabuleiro->linhas && novaColuna >= 0 && novaColuna < tabuleiro->colunas) {
+                if (nl >= 0 && nl < tabuleiro->linhas && nc >= 0 && nc < tabuleiro->colunas) {
                     
-                    if (tabuleiro->matriz[novaLinha][novaColuna].visivel) {
+                    if (tabuleiro->matriz[nl][nc].visivel) {
                         
-                        tabuleiro->matriz[novaLinha][novaColuna].visivel = false; 
+                        tabuleiro->matriz[nl][nc].visivel = false; 
+                        tabuleiro->matriz[nl][nc].bandeira = false;
 
-                        if (tabuleiro->matriz[novaLinha][novaColuna].animaisVizinhos == 0) {
-                            adicionarNaLista(&lista, novaLinha, novaColuna);
+                        if (tabuleiro->matriz[nl][nc].animaisVizinhos == 0) {
+                            adicionarNaLista(&lista, nl, nc);
                         }
                     }
                 }
@@ -145,6 +148,7 @@ void revelarAnimais(Tabuleiro* tabuleiro) {
         for (int j = 0; j < tabuleiro->colunas; j++) {
             if (tabuleiro->matriz[i][j].tipo == ANIMAL) {
                 tabuleiro->matriz[i][j].visivel = false; 
+                tabuleiro->matriz[i][j].bandeira = false; 
             }
         }
     }

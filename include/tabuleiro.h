@@ -8,6 +8,7 @@ typedef enum { VAZIO, ANIMAL } TipoCelula;
 typedef struct {
     TipoCelula tipo;
     bool visivel;
+    bool bandeira;
     int animaisVizinhos;
 } Celula;
 
@@ -27,7 +28,7 @@ Tabuleiro* criarTabuleiro(int linhas, int colunas);
 void liberarTabuleiro(Tabuleiro* tabuleiro);
 void gerarAnimais(Tabuleiro* tabuleiro, float chanceAnimal);
 void calcularVizinhos(Tabuleiro *tabuleiro);
-void abrirCelula(Tabuleiro* tabuleiro, int linha, int coluna);
+void abrirCelula(Tabuleiro*tabuleiro, int linha, int coluna);
 bool verificarVitoria(Tabuleiro* tabuleiro);
 void revelarAnimais(Tabuleiro* tabuleiro);
 
