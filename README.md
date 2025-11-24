@@ -1,6 +1,8 @@
 # Crazy Circus: The Knife Show 🎪🔪
 "Crazy Circus: The Knife Show" é uma releitura do clássico jogo do **Campo Minado**. Nessa releitura, o player assume o papel de um palhaço lançador de facas, tentando evitar atingir os animais escondidos sob os quadrados (lonas do circo). A cada acerto seguro, um número revela quantos animais estão próximos, permitindo dedução e estratégia para manter o espetáculo vivo.
 
+Use lógica, estratégia e um pouco de coragem de palhaço lançador de facas para manter o espetáculo vivo e conquistar a plateia, sem acidentes é claro!
+
 _______________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
 
 🎯 Objetivo do Jogo
@@ -32,7 +34,7 @@ Use o clique esquerdo para selecionar o quadrado de lona que deseja revelar. Ele
 Com o clique direito, você pode marcar um quadrado de lona com o logo do jogo, indicando que suspeita haver um animal escondido ali. Isso ajuda na sua estratégia para evitar erros e manter o espetáculo em segurança.
 
 
-Use lógica, estratégia e um pouco de coragem de palhaço lançador de facas para manter o espetáculo vivo e conquistar a plateia, sem acidentes é claro!
+
 
 
 
