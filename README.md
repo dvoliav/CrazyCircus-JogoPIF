@@ -33,12 +33,6 @@ Use o clique esquerdo para selecionar o quadrado de lona que deseja revelar. Ele
 
 Com o clique direito, você pode marcar um quadrado de lona com o logo do jogo, indicando que suspeita haver um animal escondido ali. Isso ajuda na sua estratégia para evitar erros e manter o espetáculo em segurança.
 
-
-
-
-
-
-
-
+_______________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
 
 
