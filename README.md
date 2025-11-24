@@ -3,6 +3,7 @@
 
 
 
+
 🎯 Objetivo do Jogo
 
 No "Crazy Circus: The Knife Show", o objetivo é garantir que o espetáculo aconteça sem acidentes! O jogador deve revelar todas as áreas seguras do tabuleiro enquanto evita atingir os animais escondidos sob as lonas do circo.
@@ -16,6 +17,7 @@ Para vencer, o jogador deve:
 ✔️ Marcar corretamente os quadrados de lona onde acredita que há animais escondidos
 
 ❌ Evitar acertar qualquer animal, pois isso encerra o show imediatamente!
+
 
 
 
@@ -33,6 +35,7 @@ Com o clique direito, você pode marcar um quadrado de lona com o logo do jogo, 
 
 
 Use lógica, estratégia e um pouco de coragem de palhaço lançador de facas para manter o espetáculo vivo e conquistar a plateia, sem acidentes é claro!
+
 
 
 
