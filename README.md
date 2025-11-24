@@ -7,7 +7,7 @@ ________________________________________________________________________________
 
 No "Crazy Circus: The Knife Show", o objetivo é garantir que o espetáculo aconteça sem acidentes! O jogador deve revelar todas as áreas seguras do tabuleiro enquanto evita atingir os animais escondidos sob as lonas do circo.
 
-Cada quadrado revelado com segurança aproxima você da vitória, enquanto os números exibidos indicam quantos animais estão nas proximidades — informações essenciais para deduzir onde é seguro lançar as facas e onde o perigo se esconde.
+Cada quadrado revelado com segurança aproxima você da vitória, enquanto os números exibidos indicam quantos animais estão nas proximidades, que são informações essenciais para deduzir onde é seguro lançar as facas.
 
 Para vencer, o jogador deve:
 
@@ -21,7 +21,7 @@ ________________________________________________________________________________
 
 🎮 Controles do Jogo:
 
-No "Crazy Circus: The Knife Show", os controles seguem a simplicidade clássica de Campo Minado:
+No "Crazy Circus: The Knife Show", os controles são:
 
 🖱️ Botão Esquerdo do Mouse — Revelar Quadrado 
 
@@ -33,6 +33,7 @@ Com o clique direito, você pode marcar um quadrado de lona com o logo do jogo, 
 
 
 Use lógica, estratégia e um pouco de coragem de palhaço lançador de facas para manter o espetáculo vivo e conquistar a plateia, sem acidentes é claro!
+
 
 
 
