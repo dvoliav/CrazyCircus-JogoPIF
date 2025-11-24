@@ -17,8 +17,7 @@ Para vencer, o jogador deve:
 
 ❌ Evitar acertar qualquer animal, pois isso encerra o show imediatamente!
 
-
-
+_______________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
 
 🎮 Controles do Jogo:
 
@@ -34,6 +33,7 @@ Com o clique direito, você pode marcar um quadrado de lona com o logo do jogo, 
 
 
 Use lógica, estratégia e um pouco de coragem de palhaço lançador de facas para manter o espetáculo vivo e conquistar a plateia, sem acidentes é claro!
+
 
 
 
