@@ -13,6 +13,6 @@ Use o clique esquerdo para selecionar o quadrado que deseja revelar. Ele mostrar
 
 Com o clique direito, você pode marcar um quadrado com o logo do jogo, indicando que suspeita haver um animal escondido ali. Isso ajuda na sua estratégia para evitar erros e manter o espetáculo em segurança.
 
-
 Utilize essas ações com cautela e dedução para avançar nos desafios do tabuleiro e garantir que o show continue rolando, sem acidentes é claro!
+
 
