@@ -6,14 +6,12 @@
 #include <math.h>
 #include <stdio.h>
 
-// --- Definição dos Estados do Jogo ---
 typedef enum {
     MENU,
     JOGO,
     PAUSE
 } TelaDoJogo;
 
-// --- Funções Auxiliares de Cor ---
 float ClampFloat(float valor, float min, float max) {
     if (valor < min) return min;
     if (valor > max) return max;
@@ -41,22 +39,19 @@ Color GerarCorAleatoria() {
     return EscurecerCor(corBase, fator);
 }
 
-// --- Função para desenhar Botões Simples ---
+
 bool DesenharBotao(const char *texto, float x, float y, float largura, float altura) {
     Vector2 mouse = GetMousePosition();
     Rectangle rect = { x, y, largura, altura };
     bool hover = CheckCollisionPointRec(mouse, rect);
     
-    // Desenha o botão
     DrawRectangleRounded(rect, 0.2f, 6, hover ? ORANGE : DARKBLUE);
     DrawRectangleLinesEx(rect, 2, WHITE);
     
-    // Centraliza o texto
     int fontSize = 30;
     int txtWidth = MeasureText(texto, fontSize);
     DrawText(texto, x + (largura - txtWidth)/2, y + (altura - fontSize)/2, fontSize, WHITE);
     
-    // Retorna true se clicou
     return hover && IsMouseButtonPressed(MOUSE_LEFT_BUTTON);
 }
 
@@ -68,10 +63,8 @@ int main(void) {
     InitWindow(LARGURA_TELA, ALTURA_TELA, "Crazy Circus 🎪");
     SetTargetFPS(60);
     
-    // Desativa o ESC fechar o jogo automaticamente (vamos usar para pausar)
     SetExitKey(KEY_NULL); 
 
-    // --- Carregamento de Assets ---
     Texture2D fundo = LoadTexture("assets/fundoCrazyCircus.png");
     Texture2D palhacoParado = LoadTexture("assets/palhaco_parado.png");
     Texture2D palhacoJogando = LoadTexture("assets/palhaco_jogando.png");
@@ -80,15 +73,12 @@ int main(void) {
     Texture2D faca3 = LoadTexture("assets/faca_estado3.png");
     Texture2D texturaBandeira = LoadTexture("assets/logo.png");
     
-    // --- Variáveis de Controle do Jogo ---
     TelaDoJogo telaAtual = MENU;
     
-    // Variáveis do Grid
     int LINHAS = 12, COLUNAS = 12;
     Tabuleiro *tabuleiro = NULL;
     Color **coresCelulas = NULL;
 
-    // Variáveis de Layout
     float tamanhoCelula = 40;
     float espacamento = 4;
     float gridLargura = (tamanhoCelula + espacamento) * COLUNAS;
@@ -96,7 +86,6 @@ int main(void) {
     float margemSuperior = (ALTURA_TELA - gridAltura) / 2;
     float margemEsquerda = (LARGURA_TELA - gridLargura) / 2;
 
-    // Variáveis do Palhaço
     float escalaPalhaco = 0.25f;
     Vector2 posPalhaco = {
         margemEsquerda - palhacoParado.width * escalaPalhaco - 20,
@@ -104,13 +93,11 @@ int main(void) {
     };
     Vector2 offsetMao = { palhacoParado.width * 0.01f, palhacoParado.height * 0.01f };
 
-    // Variáveis da Faca
     Texture2D spritesFaca[3] = {faca1, faca2, faca3};
     Faca faca = criarFaca(spritesFaca, 0.25f);
     float velocidadeFaca = 1200.0f;
     float tempoFrameFaca = 0.1f;
     
-    // Variáveis de Estado Lógico
     double timer = 0.0;
     bool iniciarCronometro = false; 
     bool fimJogo = false;
@@ -120,17 +107,12 @@ int main(void) {
     while (!WindowShouldClose()) {
         Vector2 mouse = GetMousePosition();
 
-        // ============================================================
-        // LÓGICA DE ATUALIZAÇÃO (UPDATE)
-        // ============================================================
         
         if (telaAtual == MENU) {
-            // A lógica do menu acontece dentro do Drawing para simplificar os botões,
-            // ou podemos processar inputs aqui.
+
         }
         else if (telaAtual == JOGO) {
             
-            // Pausar com ESC ou P
             if (IsKeyPressed(KEY_ESCAPE) || IsKeyPressed(KEY_P)) {
                 telaAtual = PAUSE;
             }
@@ -139,7 +121,6 @@ int main(void) {
                 timer += GetFrameTime();
             }
 
-            // ----------- MARCAR BANDEIRA (CLIQUE DIREITO) ----------------
             if (!fimJogo && IsMouseButtonPressed(MOUSE_RIGHT_BUTTON)) {
                 for (int i = 0; i < LINHAS; i++) {
                     for (int j = 0; j < COLUNAS; j++) {
@@ -155,7 +136,6 @@ int main(void) {
                 }
             }
 
-            // ----------- ATIRAR FACA (CLIQUE ESQUERDO) ----------------
             if (!fimJogo && !faca.emMovimento && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
                 for (int i = 0; i < LINHAS; i++) {
                     for (int j = 0; j < COLUNAS; j++) {
@@ -207,36 +187,26 @@ int main(void) {
             }
         }
 
-        // ============================================================
-        // DESENHO (DRAW)
-        // ============================================================
         BeginDrawing();
         ClearBackground(RAYWHITE);
         DrawTexture(fundo, 0, 0, WHITE);
 
         if (telaAtual == MENU) {
-            // --- TELA DE MENU ---
             DrawText("CRAZY CIRCUS", LARGURA_TELA/2 - MeasureText("CRAZY CIRCUS", 80)/2, 200, 80, RED);
             DrawText("Desvie dos animais!", LARGURA_TELA/2 - MeasureText("Desvie dos animais!", 30)/2, 290, 30, DARKGRAY);
 
-            // Botão JOGAR
             if (DesenharBotao("JOGAR", LARGURA_TELA/2 - 100, 400, 200, 60)) {
                 
-                // >> RESETAR E INICIAR O JOGO <<
-                
-                // 1. Limpar memória antiga se existir
                 if (tabuleiro != NULL) liberarTabuleiro(tabuleiro);
                 if (coresCelulas != NULL) {
                     for (int i = 0; i < LINHAS; i++) free(coresCelulas[i]);
                     free(coresCelulas);
                 }
 
-                // 2. Criar Novo Tabuleiro
                 tabuleiro = criarTabuleiro(LINHAS, COLUNAS);
                 gerarAnimais(tabuleiro, 0.15f);
                 calcularVizinhos(tabuleiro);
 
-                // 3. Gerar Novas Cores
                 coresCelulas = malloc(LINHAS * sizeof(Color*));
                 for (int i = 0; i < LINHAS; i++) {
                     coresCelulas[i] = malloc(COLUNAS * sizeof(Color));
@@ -244,33 +214,26 @@ int main(void) {
                         coresCelulas[i][j] = GerarCorAleatoria();
                 }
 
-                // 4. Resetar variáveis
                 timer = 0.0;
                 iniciarCronometro = false;
                 fimJogo = false;
                 faca.emMovimento = false;
                 alvoLinha = -1;
                 
-                // 5. Mudar Estado
                 telaAtual = JOGO;
             }
 
-            // Botão SAIR
             if (DesenharBotao("SAIR", LARGURA_TELA/2 - 100, 480, 200, 60)) {
                 CloseWindow();
                 return 0;
             }
         }
         else {
-            // --- DESENHO DO JOGO (COMUM PARA JOGO E PAUSE) ---
-            
-            // Timer
             int minutos = timer / 60;
             int segundos = (int)timer % 60;
             DrawText(TextFormat("%02d:%02d", minutos, segundos), 20, 20, 30, WHITE);
 
-            // Tabuleiro
-            if (tabuleiro != NULL) { // Segurança extra
+            if (tabuleiro != NULL) { 
                 for (int i = 0; i < LINHAS; i++) {
                     for (int j = 0; j < COLUNAS; j++) {
                         float x = margemEsquerda + j * (tamanhoCelula + espacamento);
@@ -313,12 +276,10 @@ int main(void) {
                 }
             }
 
-            // Palhaço e Faca
             Texture2D spritePalhaco = faca.emMovimento ? palhacoJogando : palhacoParado;
             DrawTextureEx(spritePalhaco, posPalhaco, 0.0f, escalaPalhaco, WHITE);
             desenharFaca(&faca);
 
-            // Mensagem de Fim de Jogo
             if (fimJogo) {
                 DrawRectangle(0, ALTURA_TELA/2 - 50, LARGURA_TELA, 100, Fade(WHITE, 0.8f));
                 const char* msg = verificarVitoria(tabuleiro) ? "VOCE VENCEU!" : "FIM DE JOGO!";
@@ -326,15 +287,12 @@ int main(void) {
                 int txtW = MeasureText(msg, 40);
                 DrawText(msg, LARGURA_TELA/2 - txtW/2, ALTURA_TELA/2 - 20, 40, corMsg);
                 
-                // Botão para voltar ao menu após fim de jogo
                 if (DesenharBotao("VOLTAR AO MENU", LARGURA_TELA/2 - 120, ALTURA_TELA/2 + 60, 240, 50)) {
                     telaAtual = MENU;
                 }
             }
 
-            // --- TELA DE PAUSE (Overlay) ---
             if (telaAtual == PAUSE) {
-                // Fundo preto transparente
                 DrawRectangle(0, 0, LARGURA_TELA, ALTURA_TELA, (Color){0, 0, 0, 100});
                 
                 DrawText("PAUSADO", LARGURA_TELA/2 - MeasureText("PAUSADO", 60)/2, 200, 60, WHITE);
@@ -351,7 +309,6 @@ int main(void) {
         EndDrawing();
     }
 
-    // Liberação de memória final
     if (tabuleiro != NULL) liberarTabuleiro(tabuleiro);
     if (coresCelulas != NULL) {
         for (int i = 0; i < LINHAS; i++) free(coresCelulas[i]);
