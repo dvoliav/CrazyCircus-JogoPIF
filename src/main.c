@@ -69,6 +69,11 @@ int main(void) {
     Texture2D texturaBandeira = LoadTexture("assets/logo.png");
     Texture2D logoMenu = LoadTexture("assets/logo.png");
 
+    Texture2D animalTex[4];
+    animalTex[0] = LoadTexture("assets/animal1.png");
+    animalTex[1] = LoadTexture("assets/animal2.png");
+    animalTex[2] = LoadTexture("assets/animal3.png");
+    animalTex[3] = LoadTexture("assets/animal4.png");
 
     TelaDoJogo telaAtual = MENU;
     
@@ -104,8 +109,7 @@ int main(void) {
     while (!WindowShouldClose()) {
         Vector2 mouse = GetMousePosition();
 
-        if (telaAtual == MENU) {
-        }
+        if (telaAtual == MENU) {}
         else if (telaAtual == JOGO) {
             if (IsKeyPressed(KEY_ESCAPE) || IsKeyPressed(KEY_P)) telaAtual = PAUSE;
             if(iniciarCronometro && !fimJogo) timer += GetFrameTime();
@@ -184,7 +188,6 @@ int main(void) {
                 WHITE
             );
 
-
             if (DesenharBotao("JOGAR", LARGURA_TELA/2 - 100, 400, 200, 60)) {
                 if (tabuleiro != NULL) liberarTabuleiro(tabuleiro);
                 if (coresCelulas != NULL) {
@@ -228,19 +231,24 @@ int main(void) {
                             DrawRectangleRounded(rect, 0.2f, 6, coresCelulas[i][j]);
                             DrawRectangleLinesEx(rect, 1.5f, BLACK);
                             if (tabuleiro->matriz[i][j].bandeira) {
-                                float escalaLogo = tamanhoCelula * 1.25f; 
-                                float proporcao = (float)texturaBandeira.width / texturaBandeira.height;
-                                float w = escalaLogo;
-                                float h = escalaLogo;
-                                if (proporcao > 1) h /= proporcao; else w *= proporcao;
+                                float esc = tamanhoCelula * 1.25f; 
+                                float prop = (float)texturaBandeira.width / texturaBandeira.height;
+                                float w = esc;
+                                float h = esc;
+                                if (prop > 1) h /= prop; else w *= prop;
                                 float posX = x + (tamanhoCelula - w) / 2;
                                 float posY = y + (tamanhoCelula - h) / 2;
                                 Rectangle src = {0, 0, texturaBandeira.width, texturaBandeira.height};
                                 Rectangle dst = {posX, posY, w, h};
                                 DrawTexturePro(texturaBandeira, src, dst, (Vector2){0, 0}, 0, WHITE);
                             }
-                        } else {
-                            if (tabuleiro->matriz[i][j].tipo == ANIMAL) DrawCircle(x + tamanhoCelula/2, y + tamanhoCelula/2, 12, RED);
+                        }
+                        else {
+                            if (tabuleiro->matriz[i][j].tipo == ANIMAL) {
+                                int animalID = (i + j) % 4;
+                                float esc = tamanhoCelula / (float)animalTex[animalID].width;
+                                DrawTextureEx(animalTex[animalID], (Vector2){x, y}, 0, esc, WHITE);
+                            }
                             else if (tabuleiro->matriz[i][j].animaisVizinhos > 0) {
                                 DrawRectangleRounded(rect, 0.2f, 6, RAYWHITE); 
                                 DrawRectangleLinesEx(rect, 1.5f, LIGHTGRAY);
@@ -331,6 +339,8 @@ int main(void) {
     UnloadTexture(faca3);
     UnloadTexture(texturaBandeira);
     UnloadTexture(logoMenu);
+
+    for (int i = 0; i < 4; i++) UnloadTexture(animalTex[i]);
 
     CloseWindow();
     return 0;
