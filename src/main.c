@@ -39,19 +39,15 @@ Color GerarCorAleatoria() {
     return EscurecerCor(corBase, fator);
 }
 
-
 bool DesenharBotao(const char *texto, float x, float y, float largura, float altura) {
     Vector2 mouse = GetMousePosition();
     Rectangle rect = { x, y, largura, altura };
     bool hover = CheckCollisionPointRec(mouse, rect);
-    
     DrawRectangleRounded(rect, 0.2f, 6, hover ? ORANGE : DARKBLUE);
     DrawRectangleLinesEx(rect, 2, WHITE);
-    
     int fontSize = 30;
     int txtWidth = MeasureText(texto, fontSize);
     DrawText(texto, x + (largura - txtWidth)/2, y + (altura - fontSize)/2, fontSize, WHITE);
-    
     return hover && IsMouseButtonPressed(MOUSE_LEFT_BUTTON);
 }
 
@@ -62,7 +58,6 @@ int main(void) {
     
     InitWindow(LARGURA_TELA, ALTURA_TELA, "Crazy Circus 🎪");
     SetTargetFPS(60);
-    
     SetExitKey(KEY_NULL); 
 
     Texture2D fundo = LoadTexture("assets/fundoCrazyCircus.png");
@@ -107,19 +102,11 @@ int main(void) {
     while (!WindowShouldClose()) {
         Vector2 mouse = GetMousePosition();
 
-        
         if (telaAtual == MENU) {
-
         }
         else if (telaAtual == JOGO) {
-            
-            if (IsKeyPressed(KEY_ESCAPE) || IsKeyPressed(KEY_P)) {
-                telaAtual = PAUSE;
-            }
-
-            if(iniciarCronometro && !fimJogo){
-                timer += GetFrameTime();
-            }
+            if (IsKeyPressed(KEY_ESCAPE) || IsKeyPressed(KEY_P)) telaAtual = PAUSE;
+            if(iniciarCronometro && !fimJogo) timer += GetFrameTime();
 
             if (!fimJogo && IsMouseButtonPressed(MOUSE_RIGHT_BUTTON)) {
                 for (int i = 0; i < LINHAS; i++) {
@@ -141,11 +128,9 @@ int main(void) {
                     for (int j = 0; j < COLUNAS; j++) {
                         if (!tabuleiro->matriz[i][j].visivel) continue;
                         if (tabuleiro->matriz[i][j].bandeira) continue;
-
                         float x = margemEsquerda + j * (tamanhoCelula + espacamento);
                         float y = margemSuperior + i * (tamanhoCelula + espacamento);
                         Rectangle celulaRect = {x, y, tamanhoCelula, tamanhoCelula};
-
                         if (CheckCollisionPointRec(mouse, celulaRect)) {
                             iniciarCronometro = true;
                             alvoLinha = i;
@@ -175,16 +160,12 @@ int main(void) {
                     revelarAnimais(tabuleiro);  
                 } 
                 abrirCelula(tabuleiro, alvoLinha, alvoColuna); 
-                if(verificarVitoria(tabuleiro)){
-                    fimJogo = true;
-                }
+                if(verificarVitoria(tabuleiro)) fimJogo = true;
                 alvoLinha = alvoColuna = -1;
             }
         }
         else if (telaAtual == PAUSE) {
-            if (IsKeyPressed(KEY_ESCAPE) || IsKeyPressed(KEY_P)) {
-                telaAtual = JOGO;
-            }
+            if (IsKeyPressed(KEY_ESCAPE) || IsKeyPressed(KEY_P)) telaAtual = JOGO;
         }
 
         BeginDrawing();
@@ -196,30 +177,25 @@ int main(void) {
             DrawText("Desvie dos animais!", LARGURA_TELA/2 - MeasureText("Desvie dos animais!", 30)/2, 290, 30, DARKGRAY);
 
             if (DesenharBotao("JOGAR", LARGURA_TELA/2 - 100, 400, 200, 60)) {
-                
                 if (tabuleiro != NULL) liberarTabuleiro(tabuleiro);
                 if (coresCelulas != NULL) {
                     for (int i = 0; i < LINHAS; i++) free(coresCelulas[i]);
                     free(coresCelulas);
                 }
-
                 tabuleiro = criarTabuleiro(LINHAS, COLUNAS);
                 gerarAnimais(tabuleiro, 0.15f);
                 calcularVizinhos(tabuleiro);
-
                 coresCelulas = malloc(LINHAS * sizeof(Color*));
                 for (int i = 0; i < LINHAS; i++) {
                     coresCelulas[i] = malloc(COLUNAS * sizeof(Color));
                     for (int j = 0; j < COLUNAS; j++)
                         coresCelulas[i][j] = GerarCorAleatoria();
                 }
-
                 timer = 0.0;
                 iniciarCronometro = false;
                 fimJogo = false;
                 faca.emMovimento = false;
                 alvoLinha = -1;
-                
                 telaAtual = JOGO;
             }
 
@@ -233,13 +209,12 @@ int main(void) {
             int segundos = (int)timer % 60;
             DrawText(TextFormat("%02d:%02d", minutos, segundos), 20, 20, 30, WHITE);
 
-            if (tabuleiro != NULL) { 
+            if (tabuleiro != NULL) {
                 for (int i = 0; i < LINHAS; i++) {
                     for (int j = 0; j < COLUNAS; j++) {
                         float x = margemEsquerda + j * (tamanhoCelula + espacamento);
                         float y = margemSuperior + i * (tamanhoCelula + espacamento);
                         Rectangle rect = {x, y, tamanhoCelula, tamanhoCelula};
-
                         if (tabuleiro->matriz[i][j].visivel) {
                             DrawRectangleRounded(rect, 0.2f, 6, coresCelulas[i][j]);
                             DrawRectangleLinesEx(rect, 1.5f, BLACK);
@@ -256,9 +231,7 @@ int main(void) {
                                 DrawTexturePro(texturaBandeira, src, dst, (Vector2){0, 0}, 0, WHITE);
                             }
                         } else {
-                            if (tabuleiro->matriz[i][j].tipo == ANIMAL) {
-                                DrawCircle(x + tamanhoCelula/2, y + tamanhoCelula/2, 12, RED);
-                            } 
+                            if (tabuleiro->matriz[i][j].tipo == ANIMAL) DrawCircle(x + tamanhoCelula/2, y + tamanhoCelula/2, 12, RED);
                             else if (tabuleiro->matriz[i][j].animaisVizinhos > 0) {
                                 DrawRectangleRounded(rect, 0.2f, 6, RAYWHITE); 
                                 DrawRectangleLinesEx(rect, 1.5f, LIGHTGRAY);
@@ -281,28 +254,54 @@ int main(void) {
             desenharFaca(&faca);
 
             if (fimJogo) {
-                DrawRectangle(0, ALTURA_TELA/2 - 50, LARGURA_TELA, 100, Fade(WHITE, 0.8f));
                 const char* msg = verificarVitoria(tabuleiro) ? "VOCE VENCEU!" : "FIM DE JOGO!";
                 Color corMsg = verificarVitoria(tabuleiro) ? GREEN : RED;
                 int txtW = MeasureText(msg, 40);
-                DrawText(msg, LARGURA_TELA/2 - txtW/2, ALTURA_TELA/2 - 20, 40, corMsg);
-                
-                if (DesenharBotao("VOLTAR AO MENU", LARGURA_TELA/2 - 120, ALTURA_TELA/2 + 60, 240, 50)) {
+                float larguraBotao = 350;
+                float alturaBotao = 50;
+                float espacamentoBotao = 20;
+                int tamanhoFonteMsg = 40;
+                int alturaMsg = tamanhoFonteMsg;
+                float alturaTotalGrupo = alturaMsg + espacamentoBotao + alturaBotao*2;
+                float posYGrupo = ALTURA_TELA/2 - alturaTotalGrupo/2;
+                DrawRectangle(0, posYGrupo - 20, LARGURA_TELA, alturaTotalGrupo + 40, Fade(WHITE, 0.85f));
+                DrawText(msg, LARGURA_TELA/2 - txtW/2, posYGrupo, tamanhoFonteMsg, corMsg);
+                float posBotaoX = LARGURA_TELA/2 - larguraBotao/2;
+                float posBotaoY1 = posYGrupo + alturaMsg + espacamentoBotao;
+                float posBotaoY2 = posBotaoY1 + alturaBotao + espacamentoBotao;
+
+                if (DesenharBotao("JOGAR NOVAMENTE", posBotaoX, posBotaoY1, larguraBotao, alturaBotao)) {
+                    if (tabuleiro != NULL) liberarTabuleiro(tabuleiro);
+                    if (coresCelulas != NULL) {
+                        for (int i = 0; i < LINHAS; i++) free(coresCelulas[i]);
+                        free(coresCelulas);
+                    }
+                    tabuleiro = criarTabuleiro(LINHAS, COLUNAS);
+                    gerarAnimais(tabuleiro, 0.15f);
+                    calcularVizinhos(tabuleiro);
+                    coresCelulas = malloc(LINHAS * sizeof(Color*));
+                    for (int i = 0; i < LINHAS; i++) {
+                        coresCelulas[i] = malloc(COLUNAS * sizeof(Color));
+                        for (int j = 0; j < COLUNAS; j++)
+                            coresCelulas[i][j] = GerarCorAleatoria();
+                    }
+                    timer = 0.0;
+                    iniciarCronometro = false;
+                    fimJogo = false;
+                    faca.emMovimento = false;
+                    alvoLinha = -1;
+                }
+
+                if (DesenharBotao("VOLTAR AO MENU", posBotaoX, posBotaoY2, larguraBotao, alturaBotao)) {
                     telaAtual = MENU;
                 }
             }
 
             if (telaAtual == PAUSE) {
                 DrawRectangle(0, 0, LARGURA_TELA, ALTURA_TELA, (Color){0, 0, 0, 100});
-                
                 DrawText("PAUSADO", LARGURA_TELA/2 - MeasureText("PAUSADO", 60)/2, 200, 60, WHITE);
-
-                if (DesenharBotao("CONTINUAR", LARGURA_TELA/2 - 100, 350, 200, 50)) {
-                    telaAtual = JOGO;
-                }
-                if (DesenharBotao("MENU PRINCIPAL", LARGURA_TELA/2 - 120, 420, 240, 50)) {
-                    telaAtual = MENU;
-                }
+                if (DesenharBotao("CONTINUAR", LARGURA_TELA/2 - 100, 350, 200, 50)) telaAtual = JOGO;
+                if (DesenharBotao("MENU PRINCIPAL", LARGURA_TELA/2 - 120, 420, 240, 50)) telaAtual = MENU;
             }
         }
 
