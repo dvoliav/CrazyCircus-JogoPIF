@@ -67,7 +67,9 @@ int main(void) {
     Texture2D faca2 = LoadTexture("assets/faca_estado2.png");
     Texture2D faca3 = LoadTexture("assets/faca_estado3.png");
     Texture2D texturaBandeira = LoadTexture("assets/logo.png");
-    
+    Texture2D logoMenu = LoadTexture("assets/logo.png");
+
+
     TelaDoJogo telaAtual = MENU;
     
     int LINHAS = 12, COLUNAS = 12;
@@ -173,8 +175,15 @@ int main(void) {
         DrawTexture(fundo, 0, 0, WHITE);
 
         if (telaAtual == MENU) {
-            DrawText("CRAZY CIRCUS", LARGURA_TELA/2 - MeasureText("CRAZY CIRCUS", 80)/2, 200, 80, RED);
-            DrawText("Desvie dos animais!", LARGURA_TELA/2 - MeasureText("Desvie dos animais!", 30)/2, 290, 30, DARKGRAY);
+            float escalaLogo = 0.5f;
+            DrawTextureEx(
+                logoMenu,
+                (Vector2){ LARGURA_TELA/2 - (logoMenu.width * escalaLogo)/2, 10 },
+                0.0f,
+                escalaLogo,
+                WHITE
+            );
+
 
             if (DesenharBotao("JOGAR", LARGURA_TELA/2 - 100, 400, 200, 60)) {
                 if (tabuleiro != NULL) liberarTabuleiro(tabuleiro);
@@ -321,6 +330,7 @@ int main(void) {
     UnloadTexture(faca2);
     UnloadTexture(faca3);
     UnloadTexture(texturaBandeira);
+    UnloadTexture(logoMenu);
 
     CloseWindow();
     return 0;
