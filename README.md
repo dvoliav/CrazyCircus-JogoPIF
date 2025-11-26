@@ -29,11 +29,9 @@ No "Crazy Circus: The Knife Show", os controles são:
 
 Use o clique esquerdo para selecionar o quadrado de lona que deseja revelar. Ele mostrará se o espaço está seguro ou se esconde um dos animais do circo que não devem ser atingidos.
 
-🖱️ Botão Direito do Mouse — Marcar Possível Bomba
+🖱️ Botão Direito do Mouse — Marcar Possível Bomba Com o clique direito, você pode marcar um quadrado de lona com o logo do jogo, indicando que suspeita haver um animal escondido ali. Isso ajuda na sua estratégia para evitar erros e manter o espetáculo em segurança.
 
 Link da gameplay do jogo: https://www.youtube.com/watch?v=NXDLUEWYWSc 
-Com o clique direito, você pode marcar um quadrado de lona com o logo do jogo, indicando que suspeita haver um animal escondido ali. Isso ajuda na sua estratégia para evitar erros e manter o espetáculo em segurança.
-
 _______________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
 
 
