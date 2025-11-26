@@ -4,6 +4,11 @@
 Use lógica, estratégia e um pouco de coragem de palhaço lançador de facas para manter o espetáculo vivo e conquistar a plateia, sem acidentes é claro!
 
 _______________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+Link da gameplay do jogo: https://www.youtube.com/watch?v=NXDLUEWYWSc 
+_______________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+
+Grupo: Ranilton Araújo, Diego Gomes e Felipe Lemos 
+_______________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
 
 🎯 Objetivo do Jogo
 
@@ -31,8 +36,8 @@ Use o clique esquerdo para selecionar o quadrado de lona que deseja revelar. Ele
 
 🖱️ Botão Direito do Mouse — Marcar Possível Bomba Com o clique direito, você pode marcar um quadrado de lona com o logo do jogo, indicando que suspeita haver um animal escondido ali. Isso ajuda na sua estratégia para evitar erros e manter o espetáculo em segurança.
 
-Link da gameplay do jogo: https://www.youtube.com/watch?v=NXDLUEWYWSc 
 _______________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+
 
 
 
