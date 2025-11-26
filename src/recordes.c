@@ -10,8 +10,14 @@ void carregarRecordes(Recorde lista[10], int *quantidade) {
     }
 
     *quantidade = 0;
-    while (*quantidade < 10 && fscanf(arq, "%5s %lf", lista[*quantidade].nome, &lista[*quantidade].tempo) == 2)
+
+    char tempoStr[10];
+    while (*quantidade < 10 && fscanf(arq, "%5s %9s", lista[*quantidade].nome, tempoStr) == 2) {
+        int min, seg;
+        sscanf(tempoStr, "%d:%d", &min, &seg);
+        lista[*quantidade].tempo = min * 60 + seg;
         (*quantidade)++;
+    }
 
     fclose(arq);
 }
@@ -20,8 +26,11 @@ void salvarRecordes(Recorde lista[10], int quantidade) {
     FILE *arq = fopen("recordes.txt", "w");
     if (!arq) return;
 
-    for (int i = 0; i < quantidade; i++)
-        fprintf(arq, "%s %.2f\n", lista[i].nome, lista[i].tempo);
+    for (int i = 0; i < quantidade; i++) {
+        int min = (int)lista[i].tempo / 60;
+        int seg = (int)lista[i].tempo % 60;
+        fprintf(arq, "%s %02d:%02d\n", lista[i].nome, min, seg);
+    }
 
     fclose(arq);
 }

@@ -62,7 +62,7 @@ int main(void) {
     
     InitWindow(LARGURA_TELA, ALTURA_TELA, "Crazy Circus 🎪");
     SetTargetFPS(60);
-    SetExitKey(KEY_NULL); 
+    SetExitKey(KEY_NULL);
 
     Texture2D fundo = LoadTexture("assets/fundoCrazyCircus.png");
     Texture2D palhacoParado = LoadTexture("assets/palhaco_parado.png");
@@ -225,6 +225,32 @@ int main(void) {
         else if (telaAtual == PAUSE) {
             if (IsKeyPressed(KEY_ESCAPE) || IsKeyPressed(KEY_P)) telaAtual = JOGO;
         }
+        else if (telaAtual == RECORDES) {
+            BeginDrawing();
+            ClearBackground(BLACK);
+            DrawTexture(fundo, 0, 0, WHITE);
+
+            DrawText("TOP 10 RECORDES", LARGURA_TELA/2 - 200, 60, 40, YELLOW);
+
+            for (int i = 0; i < qntRecordes; i++) {
+                int min = (int)recordes[i].tempo / 60;
+                int seg = (int)recordes[i].tempo % 60;
+                DrawText(
+                    TextFormat("%d. %s - %02d:%02d", i+1, recordes[i].nome, min, seg),
+                    300,
+                    150 + i * 40,
+                    30,
+                    WHITE
+                );
+            }
+
+            if (DesenharBotao("VOLTAR", LARGURA_TELA/2 - 100, 650, 200, 50)) {
+                telaAtual = MENU;
+            }
+
+            EndDrawing();
+            continue;
+        }
 
         BeginDrawing();
         ClearBackground(RAYWHITE);
@@ -266,6 +292,8 @@ int main(void) {
             int segundos = (int)timer % 60;
             DrawText(TextFormat("%02d:%02d", minutos, segundos), 20, 20, 30, WHITE);
 
+            DrawText("P para pausar", LARGURA_TELA - MeasureText("P para pausar", 20) - 20, 20, 20, WHITE);
+
             if (tabuleiro != NULL) {
                 for (int i = 0; i < LINHAS; i++) {
                     for (int j = 0; j < COLUNAS; j++) {
@@ -276,7 +304,7 @@ int main(void) {
                             DrawRectangleRounded(rect, 0.2f, 6, coresCelulas[i][j]);
                             DrawRectangleLinesEx(rect, 1.5f, BLACK);
                             if (tabuleiro->matriz[i][j].bandeira) {
-                                float esc = tamanhoCelula * 1.25f; 
+                                float esc = tamanhoCelula * 1.25f;
                                 float prop = (float)texturaBandeira.width / texturaBandeira.height;
                                 float w = esc;
                                 float h = esc;
@@ -295,7 +323,7 @@ int main(void) {
                                 DrawTextureEx(animalTex[animalID], (Vector2){x, y}, 0, esc, WHITE);
                             }
                             else if (tabuleiro->matriz[i][j].animaisVizinhos > 0) {
-                                DrawRectangleRounded(rect, 0.2f, 6, RAYWHITE); 
+                                DrawRectangleRounded(rect, 0.2f, 6, RAYWHITE);
                                 DrawRectangleLinesEx(rect, 1.5f, LIGHTGRAY);
                                 char num[2];
                                 sprintf(num, "%d", tabuleiro->matriz[i][j].animaisVizinhos);
@@ -347,18 +375,8 @@ int main(void) {
                 DrawRectangle(0, 0, LARGURA_TELA, ALTURA_TELA, (Color){0, 0, 0, 100});
                 DrawText("PAUSADO", LARGURA_TELA/2 - MeasureText("PAUSADO", 60)/2, 200, 60, WHITE);
                 if (DesenharBotao("CONTINUAR", LARGURA_TELA/2 - 100, 350, 200, 50)) telaAtual = JOGO;
-                if (DesenharBotao("MENU PRINCIPAL", LARGURA_TELA/2 - 120, 420, 240, 50)) telaAtual = MENU;
+                if (DesenharBotao("MENU PRINCIPAL", LARGURA_TELA/2 - 150, 420, 300, 50)) telaAtual = MENU;
             }
-        }
-
-        if (telaAtual == RECORDES) {
-            DrawText("TOP 10 RECORDES", LARGURA_TELA/2 - 200, 60, 40, YELLOW);
-            for (int i = 0; i < qntRecordes; i++) {
-                char linha[64];
-                sprintf(linha, "%d. %s - %.2f s", i+1, recordes[i].nome, recordes[i].tempo);
-                DrawText(linha, 300, 150 + i * 40, 30, WHITE);
-            }
-            if (DesenharBotao("VOLTAR", LARGURA_TELA/2 - 100, 650, 200, 50)) telaAtual = MENU;
         }
 
         EndDrawing();
