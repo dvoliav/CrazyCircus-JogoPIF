@@ -1,15 +1,19 @@
 #include "raylib.h"
 #include "tabuleiro.h"
 #include "faca.h"
+#include "recordes.h"
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
 #include <stdio.h>
+#include <string.h>
 
 typedef enum {
     MENU,
+    DIGITAR_NOME,
     JOGO,
-    PAUSE
+    PAUSE,
+    RECORDES
 } TelaDoJogo;
 
 float ClampFloat(float valor, float min, float max) {
@@ -106,10 +110,54 @@ int main(void) {
     int alvoLinha = -1;
     int alvoColuna = -1;
 
+    char nomeJogador[6] = "";
+    int indiceNome = 0;
+
+    Recorde recordes[10];
+    int qntRecordes = 0;
+    carregarRecordes(recordes, &qntRecordes);
+
     while (!WindowShouldClose()) {
         Vector2 mouse = GetMousePosition();
 
         if (telaAtual == MENU) {}
+        else if (telaAtual == DIGITAR_NOME) {
+            int tecla = GetCharPressed();
+            while (tecla > 0) {
+                if (((tecla >= 'A' && tecla <= 'Z') || (tecla >= 'a' && tecla <= 'z')) && indiceNome < 5) {
+                    nomeJogador[indiceNome++] = (char)tecla;
+                    nomeJogador[indiceNome] = '\0';
+                }
+                tecla = GetCharPressed();
+            }
+            if (IsKeyPressed(KEY_BACKSPACE) && indiceNome > 0) {
+                indiceNome--;
+                nomeJogador[indiceNome] = '\0';
+            }
+            if (IsKeyPressed(KEY_ENTER) && indiceNome > 0) {
+                if (tabuleiro != NULL) liberarTabuleiro(tabuleiro);
+                if (coresCelulas != NULL) {
+                    for (int i = 0; i < LINHAS; i++) free(coresCelulas[i]);
+                    free(coresCelulas);
+                    coresCelulas = NULL;
+                }
+                tabuleiro = criarTabuleiro(LINHAS, COLUNAS);
+                gerarAnimais(tabuleiro, 0.15f);
+                calcularVizinhos(tabuleiro);
+                coresCelulas = malloc(LINHAS * sizeof(Color*));
+                for (int i = 0; i < LINHAS; i++) {
+                    coresCelulas[i] = malloc(COLUNAS * sizeof(Color));
+                    for (int j = 0; j < COLUNAS; j++)
+                        coresCelulas[i][j] = GerarCorAleatoria();
+                }
+                timer = 0.0;
+                iniciarCronometro = false;
+                fimJogo = false;
+                faca.emMovimento = false;
+                alvoLinha = -1;
+                telaAtual = JOGO;
+            }
+        }
         else if (telaAtual == JOGO) {
             if (IsKeyPressed(KEY_ESCAPE) || IsKeyPressed(KEY_P)) telaAtual = PAUSE;
             if(iniciarCronometro && !fimJogo) timer += GetFrameTime();
@@ -163,10 +211,14 @@ int main(void) {
             if (!faca.emMovimento && alvoLinha != -1 && alvoColuna != -1) {
                 if (tabuleiro->matriz[alvoLinha][alvoColuna].tipo == ANIMAL) {
                     fimJogo = true;
-                    revelarAnimais(tabuleiro);  
+                    revelarAnimais(tabuleiro);
                 } 
                 abrirCelula(tabuleiro, alvoLinha, alvoColuna); 
-                if(verificarVitoria(tabuleiro)) fimJogo = true;
+                if(verificarVitoria(tabuleiro)) {
+                    fimJogo = true;
+                    adicionarRecorde(recordes, &qntRecordes, nomeJogador, timer);
+                    salvarRecordes(recordes, qntRecordes);
+                }
                 alvoLinha = alvoColuna = -1;
             }
         }
@@ -188,33 +240,26 @@ int main(void) {
                 WHITE
             );
 
-            if (DesenharBotao("JOGAR", LARGURA_TELA/2 - 100, 400, 200, 60)) {
-                if (tabuleiro != NULL) liberarTabuleiro(tabuleiro);
-                if (coresCelulas != NULL) {
-                    for (int i = 0; i < LINHAS; i++) free(coresCelulas[i]);
-                    free(coresCelulas);
-                }
-                tabuleiro = criarTabuleiro(LINHAS, COLUNAS);
-                gerarAnimais(tabuleiro, 0.15f);
-                calcularVizinhos(tabuleiro);
-                coresCelulas = malloc(LINHAS * sizeof(Color*));
-                for (int i = 0; i < LINHAS; i++) {
-                    coresCelulas[i] = malloc(COLUNAS * sizeof(Color));
-                    for (int j = 0; j < COLUNAS; j++)
-                        coresCelulas[i][j] = GerarCorAleatoria();
-                }
-                timer = 0.0;
-                iniciarCronometro = false;
-                fimJogo = false;
-                faca.emMovimento = false;
-                alvoLinha = -1;
-                telaAtual = JOGO;
+            if (DesenharBotao("JOGAR", LARGURA_TELA/2 - 100, 420, 200, 60)) {
+                nomeJogador[0] = '\0';
+                indiceNome = 0;
+                telaAtual = DIGITAR_NOME;
             }
 
-            if (DesenharBotao("SAIR", LARGURA_TELA/2 - 100, 480, 200, 60)) {
+            if (DesenharBotao("RECORDES", LARGURA_TELA/2 - 100, 500, 200, 60)) {
+                carregarRecordes(recordes, &qntRecordes);
+                telaAtual = RECORDES;
+            }
+
+            if (DesenharBotao("SAIR", LARGURA_TELA/2 - 100, 580, 200, 60)) {
                 CloseWindow();
                 return 0;
             }
+        }
+        else if (telaAtual == DIGITAR_NOME) {
+            DrawText("DIGITE SEU NOME (max 5 caracteres)", LARGURA_TELA/2 - 220, 220, 24, WHITE);
+            DrawText(nomeJogador, LARGURA_TELA/2 - MeasureText(nomeJogador, 48)/2, 300, 48, YELLOW);
+            DrawText("APERTE ENTER PARA INICIAR", LARGURA_TELA/2 - 170, 380, 20, WHITE);
         }
         else {
             int minutos = timer / 60;
@@ -288,25 +333,9 @@ int main(void) {
                 float posBotaoY2 = posBotaoY1 + alturaBotao + espacamentoBotao;
 
                 if (DesenharBotao("JOGAR NOVAMENTE", posBotaoX, posBotaoY1, larguraBotao, alturaBotao)) {
-                    if (tabuleiro != NULL) liberarTabuleiro(tabuleiro);
-                    if (coresCelulas != NULL) {
-                        for (int i = 0; i < LINHAS; i++) free(coresCelulas[i]);
-                        free(coresCelulas);
-                    }
-                    tabuleiro = criarTabuleiro(LINHAS, COLUNAS);
-                    gerarAnimais(tabuleiro, 0.15f);
-                    calcularVizinhos(tabuleiro);
-                    coresCelulas = malloc(LINHAS * sizeof(Color*));
-                    for (int i = 0; i < LINHAS; i++) {
-                        coresCelulas[i] = malloc(COLUNAS * sizeof(Color));
-                        for (int j = 0; j < COLUNAS; j++)
-                            coresCelulas[i][j] = GerarCorAleatoria();
-                    }
-                    timer = 0.0;
-                    iniciarCronometro = false;
-                    fimJogo = false;
-                    faca.emMovimento = false;
-                    alvoLinha = -1;
+                    nomeJogador[0] = '\0';
+                    indiceNome = 0;
+                    telaAtual = DIGITAR_NOME;
                 }
 
                 if (DesenharBotao("VOLTAR AO MENU", posBotaoX, posBotaoY2, larguraBotao, alturaBotao)) {
@@ -320,6 +349,16 @@ int main(void) {
                 if (DesenharBotao("CONTINUAR", LARGURA_TELA/2 - 100, 350, 200, 50)) telaAtual = JOGO;
                 if (DesenharBotao("MENU PRINCIPAL", LARGURA_TELA/2 - 120, 420, 240, 50)) telaAtual = MENU;
             }
+        }
+
+        if (telaAtual == RECORDES) {
+            DrawText("TOP 10 RECORDES", LARGURA_TELA/2 - 200, 60, 40, YELLOW);
+            for (int i = 0; i < qntRecordes; i++) {
+                char linha[64];
+                sprintf(linha, "%d. %s - %.2f s", i+1, recordes[i].nome, recordes[i].tempo);
+                DrawText(linha, 300, 150 + i * 40, 30, WHITE);
+            }
+            if (DesenharBotao("VOLTAR", LARGURA_TELA/2 - 100, 650, 200, 50)) telaAtual = MENU;
         }
 
         EndDrawing();

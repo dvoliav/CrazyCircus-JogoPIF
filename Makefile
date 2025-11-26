@@ -13,6 +13,7 @@ SRC = $(wildcard src/*.c)
 BIN_DIR = bin
 TARGET = $(BIN_DIR)/circo_das_facas
 
+
 # --- Regras ---
 all: $(TARGET)
 
