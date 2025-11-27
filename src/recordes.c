@@ -52,7 +52,8 @@ void adicionarRecorde(Recorde lista[10], int *quantidade, const char nome[6], do
         strcpy(lista[*quantidade].nome, nome);
         lista[*quantidade].tempo = tempo;
         (*quantidade)++;
-    } else {
+    } 
+    else {
         if (tempo < lista[9].tempo) {
             strcpy(lista[9].nome, nome);
             lista[9].tempo = tempo;
@@ -60,4 +61,8 @@ void adicionarRecorde(Recorde lista[10], int *quantidade, const char nome[6], do
     }
 
     ordenarRecordes(lista, *quantidade);
+
+    if (*quantidade > 10) {
+        *quantidade = 10;
+    }
 }

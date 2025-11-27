@@ -7,7 +7,7 @@ typedef enum { VAZIO, ANIMAL } TipoCelula;
 
 typedef struct {
     TipoCelula tipo;
-    bool visivel;
+    bool coberta;
     bool bandeira;
     int animaisVizinhos;
 } Celula;

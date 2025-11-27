@@ -26,7 +26,7 @@ Tabuleiro* criarTabuleiro(int linhas, int colunas) {
         tabuleiro->matriz[i] = malloc(colunas * sizeof(Celula));
         for (int j = 0; j < colunas; j++) {
             tabuleiro->matriz[i][j].tipo = VAZIO;
-            tabuleiro->matriz[i][j].visivel = true;
+            tabuleiro->matriz[i][j].coberta = true;
             tabuleiro->matriz[i][j].bandeira = false;
             tabuleiro->matriz[i][j].animaisVizinhos = 0;
         }
@@ -51,7 +51,7 @@ void gerarAnimais(Tabuleiro* tabuleiro, float chanceAnimal) {
             else
                 tabuleiro->matriz[i][j].tipo = VAZIO;
             
-            tabuleiro->matriz[i][j].visivel = true;
+            tabuleiro->matriz[i][j].coberta = true;
             tabuleiro->matriz[i][j].bandeira = false;
         }
     }
@@ -92,9 +92,9 @@ void calcularVizinhos(Tabuleiro* tabuleiro) {
 void abrirCelula(Tabuleiro* tabuleiro, int linha, int coluna) {
     if (linha < 0 || linha >= tabuleiro->linhas || coluna < 0 || coluna >= tabuleiro->colunas) return;
     
-    if (!tabuleiro->matriz[linha][coluna].visivel) return;
+    if (!tabuleiro->matriz[linha][coluna].coberta) return;
 
-    tabuleiro->matriz[linha][coluna].visivel = false;
+    tabuleiro->matriz[linha][coluna].coberta = false;
     tabuleiro->matriz[linha][coluna].bandeira = false;
 
     if (tabuleiro->matriz[linha][coluna].tipo == ANIMAL) return;
@@ -117,9 +117,9 @@ void abrirCelula(Tabuleiro* tabuleiro, int linha, int coluna) {
 
                 if (nl >= 0 && nl < tabuleiro->linhas && nc >= 0 && nc < tabuleiro->colunas) {
                     
-                    if (tabuleiro->matriz[nl][nc].visivel) {
+                    if (tabuleiro->matriz[nl][nc].coberta) {
                         
-                        tabuleiro->matriz[nl][nc].visivel = false; 
+                        tabuleiro->matriz[nl][nc].coberta = false; 
                         tabuleiro->matriz[nl][nc].bandeira = false;
 
                         if (tabuleiro->matriz[nl][nc].animaisVizinhos == 0) {
@@ -135,7 +135,7 @@ void abrirCelula(Tabuleiro* tabuleiro, int linha, int coluna) {
 bool verificarVitoria(Tabuleiro* tabuleiro) {
     for (int i = 0; i < tabuleiro->linhas; i++) {
         for (int j = 0; j < tabuleiro->colunas; j++) {
-            if (tabuleiro->matriz[i][j].tipo != ANIMAL && tabuleiro->matriz[i][j].visivel) {
+            if (tabuleiro->matriz[i][j].tipo != ANIMAL && tabuleiro->matriz[i][j].coberta) {
                 return false; 
             }
         }
@@ -147,7 +147,7 @@ void revelarAnimais(Tabuleiro* tabuleiro) {
     for (int i = 0; i < tabuleiro->linhas; i++) {
         for (int j = 0; j < tabuleiro->colunas; j++) {
             if (tabuleiro->matriz[i][j].tipo == ANIMAL) {
-                tabuleiro->matriz[i][j].visivel = false; 
+                tabuleiro->matriz[i][j].coberta = false; 
                 tabuleiro->matriz[i][j].bandeira = false; 
             }
         }

@@ -165,7 +165,7 @@ int main(void) {
             if (!fimJogo && IsMouseButtonPressed(MOUSE_RIGHT_BUTTON)) {
                 for (int i = 0; i < LINHAS; i++) {
                     for (int j = 0; j < COLUNAS; j++) {
-                        if (!tabuleiro->matriz[i][j].visivel) continue;
+                        if (!tabuleiro->matriz[i][j].coberta) continue;
                         float x = margemEsquerda + j * (tamanhoCelula + espacamento);
                         float y = margemSuperior + i * (tamanhoCelula + espacamento);
                         Rectangle celulaRect = {x, y, tamanhoCelula, tamanhoCelula};
@@ -180,7 +180,7 @@ int main(void) {
             if (!fimJogo && !faca.emMovimento && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
                 for (int i = 0; i < LINHAS; i++) {
                     for (int j = 0; j < COLUNAS; j++) {
-                        if (!tabuleiro->matriz[i][j].visivel) continue;
+                        if (!tabuleiro->matriz[i][j].coberta) continue;
                         if (tabuleiro->matriz[i][j].bandeira) continue;
                         float x = margemEsquerda + j * (tamanhoCelula + espacamento);
                         float y = margemSuperior + i * (tamanhoCelula + espacamento);
@@ -300,7 +300,7 @@ int main(void) {
                         float x = margemEsquerda + j * (tamanhoCelula + espacamento);
                         float y = margemSuperior + i * (tamanhoCelula + espacamento);
                         Rectangle rect = {x, y, tamanhoCelula, tamanhoCelula};
-                        if (tabuleiro->matriz[i][j].visivel) {
+                        if (tabuleiro->matriz[i][j].coberta) {
                             DrawRectangleRounded(rect, 0.2f, 6, coresCelulas[i][j]);
                             DrawRectangleLinesEx(rect, 1.5f, BLACK);
                             if (tabuleiro->matriz[i][j].bandeira) {
